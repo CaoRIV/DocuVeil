@@ -13,6 +13,7 @@ function snapshot(): AdapterSnapshot {
     sendButton: node,
     newChatButton: node,
     attachmentButton: node,
+    auxiliaryRoots: [],
     activeTitle: 'Beta report',
     conversations: [
       { id: 'alpha', title: 'Alpha brief', href: '/c/alpha', active: false },

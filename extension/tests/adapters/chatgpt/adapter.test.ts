@@ -8,11 +8,14 @@ describe('ChatGptAdapter', () => {
 
   it('supports localized current DOM without a transient send button', () => {
     document.body.innerHTML = supportedHtml;
-    const snapshot = new ChatGptAdapter(document, window).inspect();
+    const adapter = new ChatGptAdapter(document, window);
+    const snapshot = adapter.inspect();
+    expect(adapter.id).toBe('chatgpt');
     expect(snapshot.ready).toBe(true);
     expect(snapshot.navRoot?.tagName).toBe('NAV');
     expect(snapshot.composerRoot?.tagName).toBe('FORM');
     expect(snapshot.sendButton).toBeNull();
+    expect(snapshot.auxiliaryRoots).toEqual([]);
     expect(snapshot.activeTitle).toBe('Beta report');
     expect(snapshot.conversations).toEqual([
       { id: 'alpha', title: 'Alpha brief', href: '/c/alpha', active: false },

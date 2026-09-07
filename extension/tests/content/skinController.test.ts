@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { AdapterSnapshot, PlatformAdapter } from '../../src/adapters/platformAdapter';
 import { SkinController } from '../../src/content/skinController';
+import type { PlatformId } from '../../src/shared/platform';
 
-function snapshot(ready = true): AdapterSnapshot {
+function snapshot(ready = true, auxiliaryRoots: HTMLElement[] = []): AdapterSnapshot {
   const create = () => document.createElement('div');
   return {
     ready,
@@ -13,13 +14,15 @@ function snapshot(ready = true): AdapterSnapshot {
     sendButton: ready ? create() : null,
     newChatButton: ready ? create() : null,
     attachmentButton: null,
+    auxiliaryRoots,
     activeTitle: 'Document',
     conversations: [],
   };
 }
 
-function adapter(current: AdapterSnapshot): PlatformAdapter {
+function adapter(current: AdapterSnapshot, id: PlatformId = 'chatgpt'): PlatformAdapter {
   return {
+    id,
     inspect: vi.fn(() => current),
     openConversation: vi.fn(),
     createConversation: vi.fn(),
@@ -82,24 +85,44 @@ describe('SkinController', () => {
     expect(document.querySelectorAll('[data-docuveil-shell]')).toHaveLength(1);
     expect(platform.observe).toHaveBeenCalledOnce();
     expect(document.documentElement.classList.contains('docuveil-enabled')).toBe(true);
+    expect(document.documentElement.dataset.docuveilPlatform).toBe('chatgpt');
     controller.setEnabled(false);
     expect(document.querySelector('[data-docuveil-shell]')).toBeNull();
     expect(document.documentElement.classList.contains('docuveil-enabled')).toBe(false);
+    expect(document.documentElement.hasAttribute('data-docuveil-platform')).toBe(false);
   });
 
-  it('leaves native UI visible and reports incompatibility', () => {
-    const controller = new SkinController(document, adapter(snapshot(false)));
+  it('leaves native Claude visible and reports platform-specific incompatibility', () => {
+    const controller = new SkinController(document, adapter(snapshot(false), 'claude'));
     controller.setEnabled(true);
     expect(document.documentElement.classList.contains('docuveil-enabled')).toBe(false);
     expect(document.querySelector('[data-docuveil-compatibility]')?.textContent)
-      .toContain('ChatGPT interface is not supported');
+      .toContain('this Claude interface is not supported');
+    expect(document.querySelector('[data-docuveil-compatibility]')?.textContent)
+      .toContain('Native Claude remains available');
     controller.destroy();
+  });
+
+  it('marks auxiliary platform UI and removes every platform attribute on disable', () => {
+    const auxiliary = document.createElement('aside');
+    const controller = new SkinController(document, adapter(snapshot(true, [auxiliary]), 'claude'));
+    try {
+      controller.setEnabled(true);
+      expect(document.documentElement.dataset.docuveilPlatform).toBe('claude');
+      expect(auxiliary.getAttribute('data-docuveil-native')).toBe('auxiliary');
+      controller.setEnabled(false);
+      expect(document.documentElement.hasAttribute('data-docuveil-platform')).toBe(false);
+      expect(auxiliary.hasAttribute('data-docuveil-native')).toBe(false);
+    } finally {
+      controller.destroy();
+    }
   });
 
   it('recovers when a delayed host DOM becomes ready', () => {
     let current = snapshot(false);
     let refresh: (() => void) | undefined;
     const platform: PlatformAdapter = {
+      id: 'chatgpt',
       inspect: () => current,
       openConversation: vi.fn(),
       createConversation: vi.fn(),

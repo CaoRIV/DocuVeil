@@ -1,4 +1,5 @@
 import type { AdapterSnapshot, PlatformAdapter } from '../adapters/platformAdapter';
+import { platformName } from '../shared/platform';
 import { createShell, type ShellView } from '../shell/createShell';
 
 const ROOT_CLASS = 'docuveil-enabled';
@@ -47,6 +48,7 @@ export class SkinController {
     }
     this.notice?.remove();
     this.notice = null;
+    this.doc.documentElement.dataset.docuveilPlatform = this.adapter.id;
     this.styleComposerPath(snapshot);
     this.styleSurfaces(snapshot);
     for (const node of this.marked) node.removeAttribute('data-docuveil-native');
@@ -103,6 +105,7 @@ export class SkinController {
       [snapshot.navRoot, 'navigation'],
       [snapshot.conversationRoot, 'conversation'],
       [snapshot.composerRoot, 'composer'],
+      ...snapshot.auxiliaryRoots.map((root): [HTMLElement, string] => [root, 'auxiliary']),
     ];
     this.marked = pairs.flatMap(([node, value]) => {
       if (!node) return [];
@@ -116,7 +119,8 @@ export class SkinController {
     this.notice = this.doc.createElement('div');
     this.notice.setAttribute('data-docuveil-compatibility', 'true');
     this.notice.setAttribute('role', 'status');
-    this.notice.textContent = 'DocuVeil: this ChatGPT interface is not supported yet. Native ChatGPT remains available.';
+    const name = platformName(this.adapter.id);
+    this.notice.textContent = `DocuVeil: this ${name} interface is not supported yet. Native ${name} remains available.`;
     this.doc.body.append(this.notice);
   }
 
@@ -137,5 +141,6 @@ export class SkinController {
     for (const node of this.marked) node.removeAttribute('data-docuveil-native');
     this.marked = [];
     this.doc.documentElement.classList.remove(ROOT_CLASS);
+    delete this.doc.documentElement.dataset.docuveilPlatform;
   }
 }

@@ -6,6 +6,8 @@ function element<T extends HTMLElement>(doc: Document, selector: string): T | nu
 }
 
 export class ChatGptAdapter implements PlatformAdapter {
+  readonly id = 'chatgpt';
+
   constructor(
     private readonly doc: Document,
     private readonly win: Window,
@@ -42,6 +44,7 @@ export class ChatGptAdapter implements PlatformAdapter {
       sendButton,
       newChatButton,
       attachmentButton,
+      auxiliaryRoots: [],
       activeTitle,
       conversations,
     };

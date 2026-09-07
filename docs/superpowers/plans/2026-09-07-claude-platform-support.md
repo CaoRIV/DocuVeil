@@ -166,7 +166,7 @@ Suggested commit: `feat(extension): persist enablement per platform`
 - Consumes: `PlatformId`, `platformName(platform)`.
 - Produces: `PlatformAdapter.id` and `AdapterSnapshot.auxiliaryRoots`.
 
-- [ ] **Step 1: Write failing controller tests**
+- [x] **Step 1: Write failing controller tests**
 
 Add `id: 'chatgpt'` to adapter fakes and `auxiliaryRoots: []` to snapshots. Then test a Claude fake with one auxiliary node:
 
@@ -181,12 +181,12 @@ expect(auxiliary.hasAttribute('data-docuveil-native')).toBe(false);
 
 Also assert that an unsupported Claude snapshot reports `this Claude interface is not supported`.
 
-- [ ] **Step 2: Verify RED**
+- [x] **Step 2: Verify RED**
 
 Run: `npm test -w @docuveil/extension -- --run tests/content/skinController.test.ts`  
 Expected: FAIL because platform metadata and auxiliary roots are absent.
 
-- [ ] **Step 3: Extend the adapter contract and controller**
+- [x] **Step 3: Extend the adapter contract and controller**
 
 ```ts
 export type AdapterSnapshot = {
@@ -202,7 +202,7 @@ export interface PlatformAdapter {
 
 Set `ChatGptAdapter.id = 'chatgpt'` and return `auxiliaryRoots: []`. In `SkinController`, set `data-docuveil-platform` when mounting, mark every auxiliary root, use `platformName(this.adapter.id)` in the compatibility notice, and remove all attributes during cleanup.
 
-- [ ] **Step 4: Verify GREEN**
+- [x] **Step 4: Verify GREEN**
 
 Run the focused controller and ChatGPT adapter tests, then `npm test`.  
 Expected: the existing ChatGPT behavior remains green.

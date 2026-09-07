@@ -104,6 +104,7 @@ describe('ChatGPT skin integration', () => {
     const controller = new SkinController(document, new ChatGptAdapter(document, window));
     controller.setEnabled(true);
     expect(document.documentElement.classList.contains('docuveil-enabled')).toBe(true);
+    expect(document.documentElement.dataset.docuveilPlatform).toBe('chatgpt');
     expect(document.querySelector('code')).toBe(code);
     expect(document.querySelector('h2')).toBe(heading);
     expect(document.querySelector('table')).toBe(table);
@@ -114,6 +115,7 @@ describe('ChatGPT skin integration', () => {
     expect(nativeKeydown).toHaveBeenCalledOnce();
     controller.setEnabled(false);
     expect(document.querySelector('[data-docuveil-shell]')).toBeNull();
+    expect(document.documentElement.hasAttribute('data-docuveil-platform')).toBe(false);
     expect(document.querySelector('code')).toBe(code);
     expect(document.querySelector('#prompt-textarea')).toBe(composer);
   });

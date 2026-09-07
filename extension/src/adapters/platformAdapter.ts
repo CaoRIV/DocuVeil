@@ -1,3 +1,5 @@
+import type { PlatformId } from '../shared/platform';
+
 export type Conversation = {
   id: string;
   title: string;
@@ -14,11 +16,13 @@ export type AdapterSnapshot = {
   sendButton: HTMLElement | null;
   newChatButton: HTMLElement | null;
   attachmentButton: HTMLElement | null;
+  auxiliaryRoots: HTMLElement[];
   activeTitle: string;
   conversations: Conversation[];
 };
 
 export interface PlatformAdapter {
+  readonly id: PlatformId;
   inspect(): AdapterSnapshot;
   openConversation(href: string): void;
   createConversation(): void;
