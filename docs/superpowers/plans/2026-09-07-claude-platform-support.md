@@ -90,7 +90,7 @@ Suggested commit: `feat(extension): add supported platform detection`
 - Consumes: `PlatformId`, `detectPlatform(hostname)`.
 - Produces: `getEnabled(storage, platform)`, `setEnabled(storage, platform, enabled)`, and `toggleEnabled(storage, platform)`.
 
-- [ ] **Step 1: Write failing storage and action tests**
+- [x] **Step 1: Write failing storage and action tests**
 
 Cover these literal cases:
 
@@ -107,7 +107,7 @@ await expect(getEnabled(storage, 'claude')).resolves.toBe(false);
 
 Update background tests to prove a Claude tab toggles only Claude and an unsupported tab performs no storage write or message send. Update bootstrap tests so stored state is read with the supplied platform.
 
-- [ ] **Step 2: Verify RED**
+- [x] **Step 2: Verify RED**
 
 Run:
 
@@ -117,7 +117,7 @@ npm test -w @docuveil/extension -- --run tests/shared/storage.test.ts tests/back
 
 Expected: FAIL because the storage functions do not accept a platform.
 
-- [ ] **Step 3: Implement the state map and migration**
+- [x] **Step 3: Implement the state map and migration**
 
 Use these contracts:
 
@@ -140,7 +140,7 @@ await chromeApi.tabs.sendMessage(tab.id, { type: STATE_MESSAGE, enabled });
 
 Add `platform: PlatformId` to `bootstrapDocuVeil` dependencies and call `getEnabled(storage, platform)`. Pass `'chatgpt'` from the content entry temporarily; Task 5 replaces it with adapter detection before Claude is added to the manifest.
 
-- [ ] **Step 4: Verify GREEN**
+- [x] **Step 4: Verify GREEN**
 
 Run the three focused files, the complete `npm test`, and `npm run lint`.  
 Expected: all pass.

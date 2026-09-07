@@ -1,5 +1,10 @@
+import type { PlatformId } from './platform';
+
 export const ENABLED_KEY = 'enabled' as const;
+export const ENABLED_BY_PLATFORM_KEY = 'enabledByPlatform' as const;
 export const STATE_MESSAGE = 'DOCUVEIL_STATE' as const;
+
+export type EnabledByPlatform = Partial<Record<PlatformId, boolean>>;
 
 export type StateMessage = {
   type: typeof STATE_MESSAGE;

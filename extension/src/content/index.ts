@@ -6,6 +6,7 @@ const adapter = new ChatGptAdapter(document, window);
 const controller = new SkinController(document, adapter);
 
 void bootstrapDocuVeil({
+  platform: 'chatgpt',
   storage: chrome.storage.local,
   runtime: {
     onMessage: {

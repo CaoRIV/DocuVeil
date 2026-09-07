@@ -18,7 +18,7 @@ function harness(url = 'https://chatgpt.com/c/example') {
       sendMessage,
     },
   };
-  return { chromeApi, sendMessage, click: () => click?.() };
+  return { chromeApi, sendMessage, values, click: () => click?.() };
 }
 
 describe('registerAction', () => {
@@ -32,13 +32,29 @@ describe('registerAction', () => {
         enabled: true,
       });
     });
+    expect(test.values.enabledByPlatform).toEqual({ chatgpt: true });
   });
 
-  it('persists state but does not message an unrelated site', async () => {
+  it('toggles Claude without changing the ChatGPT value', async () => {
+    const test = harness('https://claude.ai/chat/example');
+    test.values.enabledByPlatform = { chatgpt: true, claude: false };
+    registerAction(test.chromeApi);
+    test.click();
+    await vi.waitFor(() => {
+      expect(test.sendMessage).toHaveBeenCalledWith(42, {
+        type: 'DOCUVEIL_STATE',
+        enabled: true,
+      });
+    });
+    expect(test.values.enabledByPlatform).toEqual({ chatgpt: true, claude: true });
+  });
+
+  it('does not change state or message an unrelated site', async () => {
     const test = harness('https://example.com/');
     registerAction(test.chromeApi);
     test.click();
     await vi.waitFor(() => expect(test.chromeApi.tabs.query).toHaveBeenCalled());
+    expect(test.values).toEqual({});
     expect(test.sendMessage).not.toHaveBeenCalled();
   });
 });

@@ -12,11 +12,15 @@ describe('bootstrapDocuVeil', () => {
       },
     };
     const storage: StorageArea = {
-      get: vi.fn().mockResolvedValue({ enabled: true }),
+      get: vi.fn(async (key: string) => ({
+        [key]: key === 'enabledByPlatform' ? { chatgpt: false, claude: true } : undefined,
+      })),
       set: vi.fn(),
     };
     const controller = { setEnabled: vi.fn(), destroy: vi.fn() };
-    const cleanup = await bootstrapDocuVeil({ storage, runtime, controller });
+    const cleanup = await bootstrapDocuVeil({
+      platform: 'claude', storage, runtime, controller,
+    });
     expect(controller.setEnabled).toHaveBeenCalledWith(true);
     listener?.({ type: STATE_MESSAGE, enabled: false });
     listener?.({ type: 'UNRELATED', enabled: true });

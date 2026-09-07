@@ -1,4 +1,5 @@
 import { isStateMessage, type StorageArea } from '../shared/contracts';
+import type { PlatformId } from '../shared/platform';
 import { getEnabled } from '../shared/storage';
 
 type MessageListener = (message: unknown) => void;
@@ -16,16 +17,17 @@ export interface ControllerLifecycle {
 }
 
 export async function bootstrapDocuVeil(dependencies: {
+  platform: PlatformId;
   storage: StorageArea;
   runtime: RuntimeMessages;
   controller: ControllerLifecycle;
 }): Promise<() => void> {
-  const { storage, runtime, controller } = dependencies;
+  const { platform, storage, runtime, controller } = dependencies;
   const listener: MessageListener = (message) => {
     if (isStateMessage(message)) controller.setEnabled(message.enabled);
   };
   runtime.onMessage.addListener(listener);
-  controller.setEnabled(await getEnabled(storage));
+  controller.setEnabled(await getEnabled(storage, platform));
   return () => {
     runtime.onMessage.removeListener(listener);
     controller.destroy();

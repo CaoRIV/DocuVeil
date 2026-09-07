@@ -1,4 +1,5 @@
 import { STATE_MESSAGE, type StateMessage, type StorageArea } from '../shared/contracts';
+import { detectPlatform } from '../shared/platform';
 import { toggleEnabled } from '../shared/storage';
 
 type ListenerEvent = { addListener(listener: () => void): void };
@@ -15,9 +16,10 @@ export interface ExtensionChrome {
 export function registerAction(chromeApi: ExtensionChrome): void {
   chromeApi.action.onClicked.addListener(() => {
     void (async () => {
-      const enabled = await toggleEnabled(chromeApi.storage.local);
       const [tab] = await chromeApi.tabs.query({ active: true, currentWindow: true });
-      if (tab?.id === undefined || !tab.url?.startsWith('https://chatgpt.com/')) return;
+      const platform = tab?.url ? detectPlatform(new URL(tab.url).hostname) : null;
+      if (!platform || tab?.id === undefined) return;
+      const enabled = await toggleEnabled(chromeApi.storage.local, platform);
       await chromeApi.tabs.sendMessage(tab.id, { type: STATE_MESSAGE, enabled });
     })().catch(() => {
       // Fail open: a closed or reloading tab must not break future action clicks.

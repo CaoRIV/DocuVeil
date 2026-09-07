@@ -15,19 +15,39 @@ function memoryStorage(initial: Record<string, unknown> = {}): StorageArea {
 }
 
 describe('enabled state', () => {
-  it('defaults to false', async () => {
-    await expect(getEnabled(memoryStorage())).resolves.toBe(false);
-  });
-
-  it('persists an explicit value', async () => {
+  it('defaults each platform to false', async () => {
     const storage = memoryStorage();
-    await setEnabled(storage, true);
-    await expect(getEnabled(storage)).resolves.toBe(true);
+    await expect(getEnabled(storage, 'chatgpt')).resolves.toBe(false);
+    await expect(getEnabled(storage, 'claude')).resolves.toBe(false);
   });
 
-  it('toggles and returns the persisted value', async () => {
+  it('migrates the legacy value to ChatGPT without enabling Claude', async () => {
     const storage = memoryStorage({ enabled: true });
-    await expect(toggleEnabled(storage)).resolves.toBe(false);
-    await expect(getEnabled(storage)).resolves.toBe(false);
+    await expect(getEnabled(storage, 'chatgpt')).resolves.toBe(true);
+    await setEnabled(storage, 'claude', false);
+    await expect(getEnabled(storage, 'chatgpt')).resolves.toBe(true);
+    await expect(getEnabled(storage, 'claude')).resolves.toBe(false);
+  });
+
+  it('preserves legacy ChatGPT state when Claude is changed first', async () => {
+    const storage = memoryStorage({ enabled: true });
+    await setEnabled(storage, 'claude', true);
+    await expect(getEnabled(storage, 'chatgpt')).resolves.toBe(true);
+    await expect(getEnabled(storage, 'claude')).resolves.toBe(true);
+  });
+
+  it('persists platform values independently', async () => {
+    const storage = memoryStorage();
+    await setEnabled(storage, 'chatgpt', true);
+    await setEnabled(storage, 'claude', false);
+    await expect(getEnabled(storage, 'chatgpt')).resolves.toBe(true);
+    await expect(getEnabled(storage, 'claude')).resolves.toBe(false);
+  });
+
+  it('toggles one platform without changing the other', async () => {
+    const storage = memoryStorage({ enabledByPlatform: { chatgpt: true, claude: false } });
+    await expect(toggleEnabled(storage, 'claude')).resolves.toBe(true);
+    await expect(getEnabled(storage, 'chatgpt')).resolves.toBe(true);
+    await expect(getEnabled(storage, 'claude')).resolves.toBe(true);
   });
 });
