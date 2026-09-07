@@ -2,7 +2,7 @@
 
 DocuVeil is an open-source browser-extension project that gives supported AI chats a focused, document-style interface. It is designed to reuse each platform's native message composer, attachments, sending flow, and responses while changing only the presentation layer.
 
-> Project status: early development. This repository currently contains the React/Vite landing page and the approved product design. The installable browser extension is not included yet.
+> Project status: MVP development. The repository contains the landing page, the Manifest V3 extension source, automated fixture tests, and source-installation documentation.
 
 ## Product direction
 
@@ -48,9 +48,16 @@ You can also run the code-quality check with:
 npm run lint
 ```
 
-## Browser extension installation
+## Install the extension from source
 
-There is no unpacked extension to load yet. Once the Manifest V3 implementation is added, this section will include exact instructions for loading DocuVeil from source in both Chrome and Edge. No browser-store purchase or publication will be required for local installation.
+```bash
+git clone https://github.com/CaoRIV/DocuVeil.git
+cd DocuVeil
+npm ci
+npm run build:extension
+```
+
+Load `dist/extension` as an unpacked extension in Chrome or Edge. See [the complete installation guide](docs/INSTALL.md).
 
 ## Privacy
 

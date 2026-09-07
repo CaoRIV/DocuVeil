@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">DocuVeil</title>
+  <defs>
+    <linearGradient id="page" x1="12" y1="8" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6484ef"/>
+      <stop offset="1" stop-color="#3f5fc9"/>
+    </linearGradient>
+    <linearGradient id="veil" x1="11" y1="33" x2="53" y2="45" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b7c7ff" stop-opacity=".92"/>
+      <stop offset="1" stop-color="#efe9ff" stop-opacity=".78"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#page)" d="M15 5h24l12 12v40a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3Z"/>
+  <path fill="#dce5ff" d="M39 5v12h12Z"/>
+  <path fill="url(#veil)" d="M12 34c8-7 15 7 25 0 6-4 10-3 14 0v14c-5-3-9-3-15 0-10 5-16-7-24 0Z"/>
+  <path fill="#fff" fill-opacity=".9" d="M20 22h19v3H20zm0 7h24v3H20z"/>
+</svg>

@@ -218,6 +218,12 @@ const Home = () => {
                     <span className="feature-text">Open source</span>
                   </div>
                 </div>
+                <a
+                  className="install-link"
+                  href="https://github.com/CaoRIV/DocuVeil#install-the-extension-from-source"
+                >
+                  Install from GitHub
+                </a>
               </div>
             </div>
           </div>

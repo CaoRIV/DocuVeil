@@ -1,0 +1,197 @@
+:root.docuveil-enabled {
+  --docuveil-ink: #202124;
+  --docuveil-muted: #5f6368;
+  --docuveil-border: #d9dee8;
+  --docuveil-blue: #4f6fdd;
+  --docuveil-workspace: #e9edf3;
+  color-scheme: light;
+}
+
+.docuveil-enabled body {
+  background: var(--docuveil-workspace) !important;
+  color: var(--docuveil-ink) !important;
+}
+
+.docuveil-enabled [data-docuveil-native="navigation"] {
+  display: none !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] {
+  width: min(816px, calc(100vw - 320px)) !important;
+  min-height: calc(100vh - 152px) !important;
+  margin: 128px auto 120px calc(50% - 248px) !important;
+  padding: 72px 88px 160px !important;
+  background: #fff !important;
+  border: 1px solid var(--docuveil-border) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 2px 8px rgb(30 42 64 / 10%) !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] article {
+  max-width: none !important;
+  margin: 0 0 1.4em !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--docuveil-ink) !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] pre {
+  overflow: auto;
+  border: 1px solid var(--docuveil-border);
+  border-radius: 8px;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] th,
+.docuveil-enabled [data-docuveil-native="conversation"] td {
+  padding: 8px 10px;
+  border: 1px solid var(--docuveil-border);
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] img {
+  max-width: 100%;
+  height: auto;
+}
+
+.docuveil-enabled [data-docuveil-native="composer"] {
+  position: fixed !important;
+  z-index: 2147483642 !important;
+  left: calc(50% - 248px) !important;
+  bottom: 24px !important;
+  width: min(760px, calc(100vw - 376px)) !important;
+  border: 1px solid var(--docuveil-border) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 10px 28px rgb(30 42 64 / 16%) !important;
+}
+
+[data-docuveil-shell="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483640;
+  pointer-events: none;
+  font: 14px/1.4 Arial, sans-serif;
+  color: var(--docuveil-ink);
+}
+
+.docuveil-topbar,
+.docuveil-toolbar,
+.docuveil-sidebar,
+[data-docuveil-attach] {
+  pointer-events: auto;
+}
+
+.docuveil-topbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 24px;
+  background: #fff;
+  border-bottom: 1px solid var(--docuveil-border);
+}
+
+.docuveil-title {
+  color: var(--docuveil-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docuveil-toolbar {
+  position: fixed;
+  inset: 58px 0 auto 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px;
+  background: #f8faff;
+  border-bottom: 1px solid var(--docuveil-border);
+}
+
+.docuveil-sidebar {
+  position: fixed;
+  inset: 102px auto 0 0;
+  width: 248px;
+  padding: 24px 16px;
+  overflow: auto;
+  background: #f8faff;
+  border-right: 1px solid var(--docuveil-border);
+}
+
+.docuveil-sidebar h2 {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--docuveil-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.docuveil-sidebar button {
+  width: 100%;
+  margin: 0 0 6px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.docuveil-sidebar button:hover,
+.docuveil-sidebar button[aria-current="page"] {
+  background: #e2e8fb;
+}
+
+[data-docuveil-attach] {
+  position: fixed;
+  z-index: 2147483643;
+  left: calc(50% - 292px);
+  bottom: 42px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--docuveil-border);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+
+[data-docuveil-compatibility="true"] {
+  position: fixed;
+  z-index: 2147483647;
+  right: 16px;
+  bottom: 16px;
+  max-width: 360px;
+  padding: 12px 14px;
+  border: 1px solid #e0b95c;
+  border-radius: 8px;
+  background: #fff8df;
+  color: #4b3a12;
+  box-shadow: 0 8px 24px rgb(30 42 64 / 18%);
+  font: 14px/1.4 Arial, sans-serif;
+}
+
+@media (max-width: 900px) {
+  .docuveil-enabled [data-docuveil-native="conversation"] {
+    width: calc(100vw - 64px) !important;
+    margin-left: 32px !important;
+    padding-inline: 40px !important;
+  }
+
+  .docuveil-sidebar {
+    display: none;
+  }
+
+  .docuveil-enabled [data-docuveil-native="composer"] {
+    left: 32px !important;
+    width: calc(100vw - 64px) !important;
+  }
+}

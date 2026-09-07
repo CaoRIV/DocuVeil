@@ -1,0 +1,22 @@
+{
+  "name": "@docuveil/extension",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run --exclude tests/build-output.test.ts",
+    "test:build": "vitest run tests/build-output.test.ts",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.2.9",
+    "@types/node": "^26.4.1",
+    "esbuild": "^0.28.2",
+    "jsdom": "^29.1.1",
+    "sharp": "^0.35.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
+  }
+}

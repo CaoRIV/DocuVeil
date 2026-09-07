@@ -1,0 +1,20 @@
+<nav aria-label="Chat history">
+  <a href="/">New chat</a>
+  <a href="/c/alpha">Alpha brief</a>
+  <a href="/c/beta" aria-current="page">Beta report</a>
+</nav>
+<main>
+  <article data-testid="conversation-turn-1">
+    <h2>Summary</h2>
+    <p>First response with a <a href="https://example.com">reference</a>.</p>
+    <ul><li>One item</li></ul>
+    <table><tbody><tr><td>Cell</td></tr></tbody></table>
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Fixture pixel">
+  </article>
+  <article data-testid="conversation-turn-2"><pre><code>const safe = true;</code></pre></article>
+</main>
+<form data-testid="composer-form">
+  <div id="prompt-textarea" contenteditable="true"></div>
+  <button type="button" aria-label="Attach files">+</button>
+  <button type="submit" data-testid="send-button">Send</button>
+</form>
