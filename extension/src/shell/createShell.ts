@@ -77,6 +77,10 @@ export function createShell(
   );
   topbar.append(identity, windowActions);
 
+  const toolbarBackdrop = doc.createElement('div');
+  toolbarBackdrop.className = 'docuveil-toolbar-backdrop';
+  toolbarBackdrop.setAttribute('aria-hidden', 'true');
+
   const toolbar = doc.createElement('div');
   toolbar.className = 'docuveil-toolbar';
   toolbar.setAttribute('aria-hidden', 'true');
@@ -107,13 +111,14 @@ export function createShell(
   list.className = 'docuveil-document-list';
   sidebar.append(sidebarHeader, list);
 
-  const attach = button(doc, '+', 'data-docuveil-attach', actions.attachFile);
-  attach.setAttribute('aria-label', 'Attach a file using ChatGPT');
-  root.append(topbar, toolbar, sidebar, attach);
+  root.append(topbar, toolbarBackdrop, toolbar, sidebar);
 
+  let conversationKey = '';
   const update = (snapshot: AdapterSnapshot) => {
-    title.textContent = snapshot.activeTitle;
-    attach.hidden = snapshot.attachmentButton === null;
+    if (title.textContent !== snapshot.activeTitle) title.textContent = snapshot.activeTitle;
+    const nextKey = JSON.stringify(snapshot.conversations);
+    if (nextKey === conversationKey) return;
+    conversationKey = nextKey;
     list.replaceChildren(...snapshot.conversations.map((conversation) => {
       const item = button(doc, '', 'data-docuveil-document', () => {
         actions.openConversation(conversation.href);

@@ -22,6 +22,50 @@
   display: none !important;
 }
 
+/* Flatten native surfaces before applying the document layout. Do not change
+   opacity or visibility: those properties also control menus and overlays. */
+.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form, header, footer),
+.docuveil-enabled [data-docuveil-native="composer"] :where(div, section),
+.docuveil-enabled [data-docuveil-surface] {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"]::before,
+.docuveil-enabled [data-docuveil-native="conversation"]::after,
+.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form)::before,
+.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form)::after,
+.docuveil-enabled [data-docuveil-surface]::before,
+.docuveil-enabled [data-docuveil-surface]::after {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] :where(.markdown, .prose, [data-message-author-role]),
+.docuveil-enabled [data-docuveil-native="conversation"] :where(.markdown, .prose, [data-message-author-role]) :where(span, div, p, li, strong, em, code) {
+  color: #202124 !important;
+  -webkit-text-fill-color: #202124 !important;
+  background-image: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+}
+
+.docuveil-enabled [data-docuveil-native="composer"] :where(button, [role="button"]):not([data-testid="send-button"], [data-testid="stop-button"], [type="submit"]) {
+  display: none !important;
+}
+
+.docuveil-enabled [data-docuveil-native="composer"] :is([data-testid="send-button"], [data-testid="stop-button"], button[type="submit"]) {
+  color: #202124 !important;
+  background: #eef2f8 !important;
+  border: 1px solid #d9dee8 !important;
+}
+
 .docuveil-enabled [data-docuveil-native="conversation"] {
   box-sizing: border-box !important;
   display: block !important;
@@ -31,7 +75,7 @@
   margin: var(--docuveil-header-height)
     max(2rem, calc((100vw - var(--docuveil-sidebar-width) - var(--docuveil-page-width)) / 2))
     5rem auto !important;
-  padding: 4.25rem clamp(3rem, 8vw, 9.75rem) 10rem !important;
+  padding: 4.25rem clamp(3rem, 8vw, 9.75rem) 4rem !important;
   overflow: visible !important;
   border: 1px solid var(--docuveil-border) !important;
   border-block: 0 !important;
@@ -118,10 +162,10 @@
   min-width: 0 !important;
   max-width: 58rem !important;
   margin: 2rem auto 0 !important;
-  padding: 0.4rem 0.75rem !important;
-  border: 1px solid var(--docuveil-border) !important;
-  border-radius: 1rem !important;
-  background: rgb(255 255 255 / 96%) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
   box-shadow: none !important;
   color: var(--docuveil-ink) !important;
   opacity: 1 !important;
@@ -156,6 +200,11 @@
 }
 
 .docuveil-enabled [data-docuveil-native="composer"] div:has(#prompt-textarea) {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  transform: none !important;
+  translate: none !important;
   box-sizing: border-box !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -164,6 +213,10 @@
   min-height: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .docuveil-enabled [data-docuveil-native="composer"] #prompt-textarea {
@@ -171,11 +224,66 @@
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
-  min-height: 1.5rem !important;
-  max-height: 12rem !important;
+  min-height: 2.5rem !important;
+  max-height: 40vh !important;
+  padding: 0.5rem 0 !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  font: 400 1.2rem/1.7 Arial, Helvetica, sans-serif !important;
   overflow-y: auto !important;
   background: transparent !important;
   caret-color: var(--docuveil-ink) !important;
+}
+
+.docuveil-enabled #prompt-textarea p {
+  margin: 0 !important;
+}
+
+.docuveil-enabled #prompt-textarea:empty::before,
+.docuveil-enabled #prompt-textarea [data-placeholder]::before {
+  color: #9aa0a6 !important;
+  -webkit-text-fill-color: #9aa0a6 !important;
+}
+
+.docuveil-enabled #prompt-textarea:focus-visible {
+  outline: 1px solid #dce6ff !important;
+  outline-offset: 0.5rem !important;
+}
+
+.docuveil-enabled [data-docuveil-native="composer"] :is(#composer-plus-btn, [data-testid="composer-plus-btn"], input[type="file"]) {
+  display: none !important;
+}
+
+/* Only message surfaces are reset; overlays and disabled controls keep native state. */
+.docuveil-enabled [data-docuveil-native="conversation"] [data-message-author-role],
+.docuveil-enabled [data-docuveil-native="conversation"] [data-message-author-role="user"] > div {
+  background: transparent !important;
+  color: #202124 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"] div:has(article) {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  background: transparent !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"]:not(:has(article)) [data-docuveil-native="composer"] {
+  margin-top: clamp(4rem, 25vh, 20rem) !important;
+}
+
+.docuveil-enabled [data-docuveil-native="conversation"]:not(:has(article)) h1 {
+  display: none !important;
+}
+
+/* Some native variants put the form beside main. Align it without moving it. */
+.docuveil-enabled [data-docuveil-native="composer"]:not([data-docuveil-native="conversation"] *) {
+  width: min(58rem, calc(100vw - 28rem)) !important;
+  margin-left: auto !important;
+  margin-right: max(3rem, calc((100vw - var(--docuveil-sidebar-width) - 58rem) / 2)) !important;
 }
 
 [data-docuveil-shell="true"] {
@@ -204,6 +312,13 @@
   gap: 1.5rem;
   box-sizing: border-box;
   padding: 0.625rem 1.5rem 0.5rem;
+  background: var(--docuveil-chrome);
+}
+
+.docuveil-toolbar-backdrop {
+  position: fixed;
+  inset: 5rem 0 auto;
+  height: 3.125rem;
   background: var(--docuveil-chrome);
 }
 
@@ -554,6 +669,11 @@
   .docuveil-enabled [data-docuveil-native="composer"] {
     left: auto !important;
     width: 100% !important;
+  }
+
+  .docuveil-enabled [data-docuveil-native="composer"]:not([data-docuveil-native="conversation"] *) {
+    width: calc(100vw - 4rem) !important;
+    margin-inline: 2rem !important;
   }
 
   .docuveil-sidebar,

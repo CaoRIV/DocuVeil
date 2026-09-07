@@ -45,6 +45,16 @@ describe('createShell', () => {
     view.destroy();
   });
 
+  it('covers the full toolbar row so the native page cannot show through rounded corners', () => {
+    const view = createShell(document, snapshot(), {
+      openConversation: vi.fn(), createConversation: vi.fn(), attachFile: vi.fn(),
+    });
+    const backdrop = view.root.querySelector('.docuveil-toolbar-backdrop');
+    expect(backdrop).not.toBeNull();
+    expect(backdrop?.getAttribute('aria-hidden')).toBe('true');
+    view.destroy();
+  });
+
   it('keeps decorative formatting controls out of the tab order', () => {
     const view = createShell(document, snapshot(), {
       openConversation: vi.fn(), createConversation: vi.fn(), attachFile: vi.fn(),
@@ -56,15 +66,14 @@ describe('createShell', () => {
     view.destroy();
   });
 
-  it('delegates conversation, new-chat, and attachment actions', () => {
+  it('delegates navigation without an extra attachment button', () => {
     const actions = { openConversation: vi.fn(), createConversation: vi.fn(), attachFile: vi.fn() };
     const view = createShell(document, snapshot(), actions);
     view.root.querySelector<HTMLElement>('[data-conversation-href="/c/alpha"]')?.click();
     view.root.querySelector<HTMLElement>('[data-docuveil-new]')?.click();
-    view.root.querySelector<HTMLElement>('[data-docuveil-attach]')?.click();
+    expect(view.root.querySelector('[data-docuveil-attach]')).toBeNull();
     expect(actions.openConversation).toHaveBeenCalledWith('/c/alpha');
     expect(actions.createConversation).toHaveBeenCalledOnce();
-    expect(actions.attachFile).toHaveBeenCalledOnce();
     view.destroy();
   });
 });

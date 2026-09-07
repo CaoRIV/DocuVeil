@@ -70,24 +70,22 @@ export class ChatGptAdapter implements PlatformAdapter {
         onChange();
       });
     };
-    const isDocuVeilNode = (node: Node) => node instanceof Element && Boolean(
-      node.closest('[data-docuveil-shell], [data-docuveil-compatibility]'),
+    const isDocuVeilNode = (node: Node) => Boolean(
+      (node.nodeType === 1 ? node as Element : node.parentElement)
+        ?.closest('[data-docuveil-shell], [data-docuveil-compatibility]'),
     );
     const observer = new MutationObserver((records) => {
-      const hasNativeMutation = records.some((record) =>
-        [...record.addedNodes, ...record.removedNodes].some((node) => !isDocuVeilNode(node)),
-      );
+      const hasNativeMutation = records.some((record) => {
+        if (isDocuVeilNode(record.target)) return false;
+        if (record.type !== 'childList') return true;
+        return [...record.addedNodes, ...record.removedNodes].some((node) => !isDocuVeilNode(node));
+      });
       if (hasNativeMutation) schedule();
     });
-    const snapshot = this.inspect();
-    const targets = [snapshot.navRoot, snapshot.conversationRoot]
-      .filter((target): target is HTMLElement => target !== null);
-    if (targets.length === 2) {
-      observer.observe(this.doc.body, { childList: true });
-      for (const target of targets) observer.observe(target, { childList: true, subtree: true });
-    } else {
-      observer.observe(this.doc.body, { childList: true, subtree: true });
-    }
+    observer.observe(this.doc.body, {
+      childList: true, subtree: true, characterData: true, attributes: true,
+      attributeFilter: ['aria-current', 'aria-busy', 'disabled', 'data-testid'],
+    });
     this.win.addEventListener('popstate', schedule);
     return () => {
       observer.disconnect();

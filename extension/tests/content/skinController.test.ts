@@ -29,7 +29,7 @@ function adapter(current: AdapterSnapshot): PlatformAdapter {
 }
 
 describe('SkinController', () => {
-  it('places an external composer in the page and restores its exact position', () => {
+  it('never reparents a native composer during enable and refresh', () => {
     const current = snapshot();
     const page = current.conversationRoot!;
     const host = document.createElement('section');
@@ -40,9 +40,9 @@ describe('SkinController', () => {
     const controller = new SkinController(document, adapter(current));
     try {
       controller.setEnabled(true);
-      expect(page.contains(form)).toBe(true);
+      expect(host.firstElementChild).toBe(form);
       controller.refresh();
-      expect(page.lastElementChild).toBe(form);
+      expect(form.nextSibling).toBe(next);
       controller.setEnabled(false);
       expect(host.firstElementChild).toBe(form);
       expect(form.nextSibling).toBe(next);

@@ -8,6 +8,69 @@ import { SkinController } from '../../src/content/skinController';
 const skinCss = readFileSync(resolve(process.cwd(), 'styles/docuveil.css'), 'utf8');
 
 describe('ChatGPT skin integration', () => {
+  it('clears nested dark theme surfaces while preserving hidden overlays and restores on disable', () => {
+    const style = document.createElement('style');
+    style.textContent = '.dark-surface { background-color: rgb(33,33,33); background-image: linear-gradient(black, black); backdrop-filter: blur(8px); } .hidden-overlay { opacity: 0; }' + skinCss;
+    document.head.append(style);
+    document.body.innerHTML = '<div class="dark-surface" id="host">' + supportedHtml + '</div>';
+    const main = document.querySelector('main')!;
+    const layer = document.createElement('div');
+    layer.className = 'dark-surface';
+    const message = document.createElement('div');
+    message.className = 'markdown dark-surface';
+    message.innerHTML = '<p>Readable response</p>';
+    layer.append(message);
+    main.append(layer);
+    const overlay = document.createElement('div');
+    overlay.className = 'hidden-overlay dark-surface';
+    layer.append(overlay);
+    const controller = new SkinController(document, new ChatGptAdapter(document, window));
+    try {
+      controller.setEnabled(true);
+      for (const element of [document.querySelector('#host')!, layer, message]) {
+        expect(getComputedStyle(element).backgroundColor).toBe('rgba(0, 0, 0, 0)');
+        expect(getComputedStyle(element).backgroundImage).toBe('none');
+      }
+      expect(getComputedStyle(message.querySelector('p')!).color).toBe('rgb(32, 33, 36)');
+      expect(getComputedStyle(overlay).opacity).toBe('0');
+      controller.setEnabled(false);
+      expect(getComputedStyle(layer).backgroundColor).toBe('rgb(33, 33, 33)');
+      expect(document.querySelector('[data-docuveil-surface]')).toBeNull();
+    } finally {
+      controller.destroy();
+      style.remove();
+    }
+  });
+
+  it('survives native page replacement and text streaming without rebuilding history', async () => {
+    document.body.innerHTML = '<div id="native-root">' + supportedHtml + '</div>';
+    const controller = new SkinController(document, new ChatGptAdapter(document, window));
+    controller.setEnabled(true);
+    try {
+      const historyItem = document.querySelector('[data-conversation-href="/c/alpha"]');
+      const oldMain = document.querySelector('main')!;
+      const newMain = document.createElement('main');
+      newMain.innerHTML = '<article><p>Response</p></article><section><form><div><div id="prompt-textarea" contenteditable="true"></div></div><button type="submit">Send</button></form></section>';
+      document.querySelector('form')!.remove();
+      oldMain.replaceWith(newMain);
+      await vi.waitFor(() => expect(newMain.getAttribute('data-docuveil-native')).toBe('conversation'));
+      const form = newMain.querySelector('form')!;
+      const parent = form.parentElement;
+      const text = newMain.querySelector('p')!.firstChild!;
+      for (let i = 0; i < 8; i++) text.textContent += ' word';
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      expect(form.parentElement).toBe(parent);
+      expect(form.getAttribute('data-docuveil-native')).toBe('composer');
+      expect(document.querySelector('[data-conversation-href="/c/alpha"]')).toBe(historyItem);
+      expect(document.querySelectorAll('[data-docuveil-shell]')).toHaveLength(1);
+      controller.setEnabled(false);
+      expect(newMain.hasAttribute('data-docuveil-native')).toBe(false);
+      expect(form.parentElement).toBe(parent);
+    } finally {
+      controller.destroy();
+    }
+  });
+
   it('keeps the desktop history visible and native hidden overlays transparent', () => {
     const style = document.createElement('style');
     style.textContent = '.native-overlay { opacity: 0; background: black; }' + skinCss;
@@ -21,7 +84,8 @@ describe('ChatGPT skin integration', () => {
       controller.setEnabled(true);
       expect(getComputedStyle(document.querySelector('.docuveil-sidebar')!).display).not.toBe('none');
       expect(getComputedStyle(overlay).opacity).toBe('0');
-      expect(getComputedStyle(document.querySelector('[data-docuveil-attach]')!).display).toBe('none');
+      expect(document.querySelector('[data-docuveil-attach]')).toBeNull();
+      expect(getComputedStyle(document.querySelector('#composer-plus-btn')!).display).toBe('none');
     } finally {
       controller.destroy();
       style.remove();
