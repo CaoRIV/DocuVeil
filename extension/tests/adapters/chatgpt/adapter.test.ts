@@ -6,10 +6,13 @@ import { ChatGptAdapter } from '../../../src/adapters/chatgpt/adapter';
 describe('ChatGptAdapter', () => {
   beforeEach(() => history.replaceState({}, '', '/c/beta'));
 
-  it('returns a normalized supported snapshot', () => {
+  it('supports localized current DOM without a transient send button', () => {
     document.body.innerHTML = supportedHtml;
     const snapshot = new ChatGptAdapter(document, window).inspect();
     expect(snapshot.ready).toBe(true);
+    expect(snapshot.navRoot?.tagName).toBe('NAV');
+    expect(snapshot.composerRoot?.tagName).toBe('FORM');
+    expect(snapshot.sendButton).toBeNull();
     expect(snapshot.activeTitle).toBe('Beta report');
     expect(snapshot.conversations).toEqual([
       { id: 'alpha', title: 'Alpha brief', href: '/c/alpha', active: false },
@@ -25,9 +28,9 @@ describe('ChatGptAdapter', () => {
   it('delegates native actions to host controls', () => {
     document.body.innerHTML = supportedHtml;
     const adapter = new ChatGptAdapter(document, window);
-    const newChat = vi.spyOn(document.querySelector<HTMLAnchorElement>('a[href="/"]')!, 'click')
+    const newChat = vi.spyOn(document.querySelector<HTMLAnchorElement>('[data-testid="create-new-chat-button"]')!, 'click')
       .mockImplementation(() => undefined);
-    const attach = vi.spyOn(document.querySelector<HTMLButtonElement>('[aria-label="Attach files"]')!, 'click')
+    const attach = vi.spyOn(document.querySelector<HTMLButtonElement>('[data-testid="composer-plus-btn"]')!, 'click')
       .mockImplementation(() => undefined);
     adapter.createConversation();
     adapter.attachFile();

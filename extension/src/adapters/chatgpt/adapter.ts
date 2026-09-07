@@ -12,14 +12,17 @@ export class ChatGptAdapter implements PlatformAdapter {
   ) {}
 
   inspect(): AdapterSnapshot {
-    const navRoot = element<HTMLElement>(this.doc, selectors.navRoot);
+    const historyRoot = element<HTMLElement>(this.doc, selectors.historyRoot);
     const conversationRoot = element<HTMLElement>(this.doc, selectors.conversationRoot);
     const composer = element<HTMLElement>(this.doc, selectors.composer);
-    const composerRoot = element<HTMLElement>(this.doc, selectors.composerRoot);
+    const composerRoot = composer?.closest<HTMLElement>('form') ?? null;
     const sendButton = element<HTMLElement>(this.doc, selectors.sendButton);
     const newChatButton = element<HTMLElement>(this.doc, selectors.newChatButton);
     const attachmentButton = element<HTMLElement>(this.doc, selectors.attachmentButton);
     const links = [...this.doc.querySelectorAll<HTMLAnchorElement>(selectors.conversationLinks)];
+    const navRoot = historyRoot?.closest<HTMLElement>('nav')
+      ?? newChatButton?.closest<HTMLElement>('nav')
+      ?? null;
     const conversations: Conversation[] = links.map((link) => {
       const href = link.getAttribute('href') ?? '';
       return {
@@ -31,7 +34,7 @@ export class ChatGptAdapter implements PlatformAdapter {
     });
     const activeTitle = conversations.find((item) => item.active)?.title ?? 'Untitled document';
     return {
-      ready: Boolean(navRoot && conversationRoot && composerRoot && composer && sendButton && newChatButton),
+      ready: Boolean(navRoot && conversationRoot && composerRoot && composer && newChatButton),
       navRoot,
       conversationRoot,
       composerRoot,

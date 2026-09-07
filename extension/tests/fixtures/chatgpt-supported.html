@@ -1,7 +1,11 @@
-<nav aria-label="Chat history">
-  <a href="/">New chat</a>
-  <a href="/c/alpha">Alpha brief</a>
-  <a href="/c/beta" aria-current="page">Beta report</a>
+<nav aria-label="Lịch sử đoạn chat">
+  <a data-testid="create-new-chat-button" href="/">Đoạn chat mới</a>
+  <div id="history">
+    <ul>
+      <li><a aria-label="Alpha brief" href="/c/alpha">Alpha brief</a></li>
+      <li><a aria-label="Beta report" href="/c/beta" aria-current="page">Beta report</a></li>
+    </ul>
+  </div>
 </nav>
 <main>
   <article data-testid="conversation-turn-1">
@@ -13,8 +17,7 @@
   </article>
   <article data-testid="conversation-turn-2"><pre><code>const safe = true;</code></pre></article>
 </main>
-<form data-testid="composer-form">
-  <div id="prompt-textarea" contenteditable="true"></div>
-  <button type="button" aria-label="Attach files">+</button>
-  <button type="submit" data-testid="send-button">Send</button>
+<form>
+  <div><div><div><div><div><div id="prompt-textarea" role="textbox" aria-label="Trò chuyện với ChatGPT" contenteditable="true"></div></div></div></div></div></div>
+  <button id="composer-plus-btn" type="button" aria-label="Thêm tệp và nhiều nội dung khác" data-testid="composer-plus-btn">+</button>
 </form>

@@ -1,10 +1,9 @@
 export const chatGptSelectors = {
-  navRoot: 'nav[aria-label="Chat history"]',
+  historyRoot: '#history',
   conversationRoot: 'main',
   composer: '#prompt-textarea',
-  composerRoot: 'form[data-testid="composer-form"]',
-  sendButton: '[data-testid="send-button"]',
-  newChatButton: 'nav[aria-label="Chat history"] a[href="/"]',
-  attachmentButton: '[aria-label="Attach files"], [data-testid="composer-plus-btn"]',
-  conversationLinks: 'nav[aria-label="Chat history"] a[href^="/c/"]',
+  sendButton: '[data-testid="send-button"], button[type="submit"]',
+  newChatButton: '[data-testid="create-new-chat-button"]',
+  attachmentButton: '#composer-plus-btn, [data-testid="composer-plus-btn"]',
+  conversationLinks: '#history a[href^="/c/"]',
 } as const;

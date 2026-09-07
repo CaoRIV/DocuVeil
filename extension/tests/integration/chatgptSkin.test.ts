@@ -1,8 +1,11 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import supportedHtml from '../fixtures/chatgpt-supported.html?raw';
 import { ChatGptAdapter } from '../../src/adapters/chatgpt/adapter';
 import { SkinController } from '../../src/content/skinController';
-import skinCss from '../../styles/docuveil.css?raw';
+
+const skinCss = readFileSync(resolve(process.cwd(), 'styles/docuveil.css'), 'utf8');
 
 describe('ChatGPT skin integration', () => {
   it('mounts around native rich content and restores the page', () => {
