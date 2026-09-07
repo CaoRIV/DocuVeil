@@ -33,6 +33,18 @@ describe('createShell', () => {
     view.destroy();
   });
 
+  it('renders a two-tier DocuVeil document chrome without platform branding', () => {
+    const view = createShell(document, snapshot(), {
+      openConversation: vi.fn(), createConversation: vi.fn(), attachFile: vi.fn(),
+    });
+    expect(view.root.querySelector('[data-docuveil-brand]')?.textContent).toContain('DocuVeil');
+    expect(view.root.querySelector('.docuveil-menubar')?.textContent).toContain('Format');
+    expect(view.root.querySelector('.docuveil-toolbar')?.textContent).toContain('100%');
+    expect(view.root.querySelector('.docuveil-sidebar h2')?.textContent).toBe('Document tabs');
+    expect(view.root.textContent).not.toContain('Google');
+    view.destroy();
+  });
+
   it('keeps decorative formatting controls out of the tab order', () => {
     const view = createShell(document, snapshot(), {
       openConversation: vi.fn(), createConversation: vi.fn(), attachFile: vi.fn(),

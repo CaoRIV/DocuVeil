@@ -29,6 +29,51 @@ function adapter(current: AdapterSnapshot): PlatformAdapter {
 }
 
 describe('SkinController', () => {
+  it('places an external composer in the page and restores its exact position', () => {
+    const current = snapshot();
+    const page = current.conversationRoot!;
+    const host = document.createElement('section');
+    const form = current.composerRoot!;
+    const next = document.createElement('span');
+    host.append(form, next);
+    document.body.append(page, host);
+    const controller = new SkinController(document, adapter(current));
+    try {
+      controller.setEnabled(true);
+      expect(page.contains(form)).toBe(true);
+      controller.refresh();
+      expect(page.lastElementChild).toBe(form);
+      controller.setEnabled(false);
+      expect(host.firstElementChild).toBe(form);
+      expect(form.nextSibling).toBe(next);
+    } finally {
+      controller.destroy();
+      page.remove();
+      host.remove();
+    }
+  });
+
+  it('keeps native nested composer nodes in place and releases their layout wrappers', () => {
+    const current = snapshot();
+    const page = current.conversationRoot!;
+    const wrapper = document.createElement('div');
+    wrapper.append(current.composerRoot!);
+    page.append(wrapper);
+    document.body.append(page);
+    const controller = new SkinController(document, adapter(current));
+    try {
+      controller.setEnabled(true);
+      expect(current.composerRoot!.parentElement).toBe(wrapper);
+      expect(wrapper.hasAttribute('data-docuveil-composer-path')).toBe(true);
+      controller.setEnabled(false);
+      expect(wrapper.hasAttribute('data-docuveil-composer-path')).toBe(false);
+      expect(current.composerRoot!.parentElement).toBe(wrapper);
+    } finally {
+      controller.destroy();
+      page.remove();
+    }
+  });
+
   it('mounts once and unmounts cleanly', () => {
     const platform = adapter(snapshot());
     const controller = new SkinController(document, platform);

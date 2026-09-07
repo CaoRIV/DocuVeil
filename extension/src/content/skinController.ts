@@ -9,6 +9,8 @@ export class SkinController {
   private stopObserving: (() => void) | null = null;
   private marked: HTMLElement[] = [];
   private notice: HTMLElement | null = null;
+  private composerPlacement: { node: HTMLElement; anchor: Comment } | null = null;
+  private composerPath: HTMLElement[] = [];
 
   constructor(
     private readonly doc: Document,
@@ -45,17 +47,55 @@ export class SkinController {
     }
     this.notice?.remove();
     this.notice = null;
+    this.placeComposer(snapshot);
+    for (const node of this.marked) node.removeAttribute('data-docuveil-native');
+    this.applyMarkers(snapshot);
     if (this.shell) {
       this.shell.update(snapshot);
       return;
     }
-    this.applyMarkers(snapshot);
     this.shell = createShell(this.doc, snapshot, {
       openConversation: (href) => this.adapter.openConversation(href),
       createConversation: () => this.adapter.createConversation(),
       attachFile: () => this.adapter.attachFile(),
     });
     this.doc.documentElement.classList.add(ROOT_CLASS);
+  }
+
+  private placeComposer(snapshot: AdapterSnapshot): void {
+    const page = snapshot.conversationRoot;
+    const form = snapshot.composerRoot;
+    if (!page || !form || form === page || form.contains(page)) return;
+    if (this.composerPlacement && this.composerPlacement.node !== form) {
+      this.restoreComposer();
+    }
+    // Keep React-owned nodes in place when they already belong to the page.
+    if (!page.contains(form) && form.parentNode) {
+      const anchor = this.doc.createComment('DocuVeil composer position');
+      form.before(anchor);
+      this.composerPlacement = { node: form, anchor };
+      page.append(form);
+    }
+    for (const node of this.composerPath) node.removeAttribute('data-docuveil-composer-path');
+    this.composerPath = [];
+    for (let node = form.parentElement; node && node !== page; node = node.parentElement) {
+      node.setAttribute('data-docuveil-composer-path', '');
+      this.composerPath.push(node);
+    }
+  }
+
+  private restoreComposer(): void {
+    const placement = this.composerPlacement;
+    if (placement) {
+      if (placement.anchor.isConnected && placement.node.isConnected) {
+        placement.anchor.replaceWith(placement.node);
+      } else {
+        placement.anchor.remove();
+      }
+      this.composerPlacement = null;
+    }
+    for (const node of this.composerPath) node.removeAttribute('data-docuveil-composer-path');
+    this.composerPath = [];
   }
 
   private applyMarkers(snapshot: AdapterSnapshot): void {
@@ -87,6 +127,7 @@ export class SkinController {
   }
 
   private clearPresentation(): void {
+    this.restoreComposer();
     this.shell?.destroy();
     this.shell = null;
     this.notice?.remove();
