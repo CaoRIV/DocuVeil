@@ -17,6 +17,13 @@ describe('extension build output', () => {
     const manifest = JSON.parse(await readFile(resolve(output, 'manifest.json'), 'utf8'));
     expect(manifest.manifest_version).toBe(3);
     expect(manifest.permissions).toEqual(['storage']);
-    expect(manifest.host_permissions).toEqual(['https://chatgpt.com/*']);
+    expect(manifest.host_permissions).toEqual([
+      'https://chatgpt.com/*',
+      'https://claude.ai/*',
+    ]);
+    expect(manifest.content_scripts[0].matches).toEqual([
+      'https://chatgpt.com/*',
+      'https://claude.ai/*',
+    ]);
   });
 });

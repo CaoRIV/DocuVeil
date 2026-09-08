@@ -322,7 +322,7 @@ Suggested commit: `feat(extension): add Claude platform adapter`
 - Consumes: `detectPlatform`, `ChatGptAdapter`, `ClaudeAdapter`.
 - Produces: `createPlatformAdapter(platform, document, window): PlatformAdapter`.
 
-- [ ] **Step 1: Write failing factory and manifest tests**
+- [x] **Step 1: Write failing factory and manifest tests**
 
 ```ts
 expect(createPlatformAdapter('chatgpt', document, window)).toBeInstanceOf(ChatGptAdapter);
@@ -335,11 +335,11 @@ Update the build assertion to expect exactly:
 ['https://chatgpt.com/*', 'https://claude.ai/*']
 ```
 
-- [ ] **Step 2: Verify RED**
+- [x] **Step 2: Verify RED**
 
 Run the factory test. Build the extension and run `npm run test:build`; both new expectations must fail before implementation.
 
-- [ ] **Step 3: Add the factory and wire the content entry**
+- [x] **Step 3: Add the factory and wire the content entry**
 
 ```ts
 const platform = detectPlatform(window.location.hostname);
@@ -352,7 +352,7 @@ if (platform) {
 
 Keep the runtime wrapper currently used by `content/index.ts`. Add both hosts to `host_permissions` and `content_scripts[0].matches`; add no other permission.
 
-- [ ] **Step 4: Verify GREEN**
+- [x] **Step 4: Verify GREEN**
 
 Run the factory test, `npm run build:extension`, and `npm run test:build`.  
 Expected: the package contains the same artifacts and exactly the two approved host permissions.
