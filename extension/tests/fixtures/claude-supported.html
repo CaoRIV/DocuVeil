@@ -1,0 +1,34 @@
+<div id="root">
+  <aside aria-label="Sidebar">
+    <div data-testid="sidebar">
+      <a href="/new">New chat</a>
+      <a href="/chat/alpha">Alpha conversation</a>
+      <a href="/chat/beta">Beta conversation</a>
+    </div>
+  </aside>
+  <main>
+    <div data-testid="chat-stale-nav-frame">
+      <div data-testid="chat-stale-nav-body">
+        <div data-testid="chat-column-body">
+          <article><p>Claude response</p></article>
+          <div data-testid="chat-column">
+            <fieldset>
+              <div
+                contenteditable="true"
+                role="textbox"
+                aria-label="Write your prompt to Claude"
+                data-testid="chat-input"
+              ></div>
+              <button type="button" data-testid="chat-input-attach">Attach</button>
+              <button type="button" data-testid="chat-input-send">Send message</button>
+            </fieldset>
+          </div>
+        </div>
+        <div role="region" aria-label="Artifact panel: Example website">
+          <button type="button" aria-label="Close artifact">Close</button>
+          <iframe title="Artifact preview"></iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

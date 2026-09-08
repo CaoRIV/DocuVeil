@@ -226,7 +226,7 @@ Suggested commit: `refactor(extension): make the skin controller platform aware`
 - Implements: `PlatformAdapter` with `id = 'claude'`.
 - Produces: normalized recent chats and an optional Artifact root in `auxiliaryRoots`.
 
-- [ ] **Step 1: Capture stable DOM attributes from live Claude**
+- [x] **Step 1: Capture stable DOM attributes from live Claude**
 
 Run this read-only snippet in Claude DevTools on an existing chat, a new chat, and an open Artifact:
 
@@ -257,9 +257,9 @@ console.log(JSON.stringify({
 
 Reject generated class names and verify the captured attributes are unchanged after sending one message.
 
-- [ ] **Step 2: Create fixtures and failing adapter tests**
+- [x] **Step 2: Create fixtures and failing adapter tests**
 
-The supported fixture must contain two `a[href^="/chat/"]` links, `main`, a native `form`, `[contenteditable="true"][role="textbox"]`, a submit button, a `/new` link, and a captured Artifact marker. Test:
+The supported fixture must contain two `a[href^="/chat/"]` links, `main`, a native `fieldset`, `[data-testid="chat-input"][contenteditable="true"][role="textbox"]`, `[data-testid="chat-input-send"]`, a `/new` link, and the captured Artifact marker. Test:
 
 ```ts
 expect(snapshot.ready).toBe(true);
@@ -268,34 +268,37 @@ expect(snapshot.conversations).toEqual([
   { id: 'alpha', title: 'Alpha conversation', href: '/chat/alpha', active: false },
   { id: 'beta', title: 'Beta conversation', href: '/chat/beta', active: true },
 ]);
-expect(snapshot.auxiliaryRoots).toEqual([document.querySelector('[data-testid="artifact-panel"]')]);
+expect(snapshot.auxiliaryRoots).toEqual([
+  document.querySelector('[role="region"][aria-label^="Artifact panel:"]'),
+]);
 ```
 
 Use the stable Artifact attribute found in Step 1 if Claude names it differently. Add readiness, native action, observer batching, and cleanup tests matching the existing ChatGPT adapter contract.
 
-- [ ] **Step 3: Verify RED**
+- [x] **Step 3: Verify RED**
 
 Run: `npm test -w @docuveil/extension -- --run tests/adapters/claude/adapter.test.ts`  
 Expected: FAIL because `ClaudeAdapter` does not exist.
 
-- [ ] **Step 4: Implement the minimal Claude adapter**
+- [x] **Step 4: Implement the minimal Claude adapter**
 
 Start with semantic selectors and retain only those confirmed in Step 1:
 
 ```ts
 export const claudeSelectors = {
+  navigationRoot: '[data-testid="sidebar"]',
   conversationRoot: 'main',
-  composer: '[contenteditable="true"][role="textbox"]',
-  sendButton: 'form button[type="submit"]',
-  newChatButton: 'a[href="/new"]',
-  conversationLinks: 'nav a[href^="/chat/"]',
-  artifactRoot: '[data-testid="artifact-panel"]',
+  composer: '[data-testid="chat-input"][contenteditable="true"][role="textbox"]',
+  sendButton: '[data-testid="chat-input-send"]',
+  newChatButton: '[data-testid="sidebar"] a[href="/new"]',
+  conversationLinks: '[data-testid="sidebar"] a[href^="/chat/"]',
+  artifactRoot: '[role="region"][aria-label^="Artifact panel:"]',
 } as const;
 ```
 
 Mirror `ChatGptAdapter` only where the `PlatformAdapter` contract requires it: inspect nodes, derive the active route from `location.pathname`, click native links/controls, batch native mutations with `requestAnimationFrame`, ignore DocuVeil nodes, and return complete cleanup. `attachFile()` is a no-op because this scope adds no upload control.
 
-- [ ] **Step 5: Verify GREEN**
+- [x] **Step 5: Verify GREEN**
 
 Run the Claude adapter tests, then all adapter tests.  
 Expected: all pass without changing ChatGPT selectors.
