@@ -37,6 +37,8 @@ DocuVeil is a presentation layer—not a replacement chat client. It keeps each 
 - A document-style reading and writing canvas for ChatGPT and Claude conversations.
 - A persistent conversation sidebar built from the active platform's native history.
 - An inline prompt area that remains part of the document flow.
+- Native Claude transcript context and composer behavior remain in place so existing chats,
+  text submission, scrolling, and streamed responses continue through Claude's own interface.
 - Live UI refreshes while the host platform navigates, replaces page elements, or streams responses.
 - Native Claude Artifacts remain visible and interactive.
 - A one-click toolbar action to enable or disable DocuVeil.
@@ -164,7 +166,9 @@ DocuVeil/
 2. A content script detects ChatGPT or Claude and inspects the page through its dedicated platform adapter.
 3. When the required native elements are available, DocuVeil applies its document layout and renders its workspace chrome.
 4. The host platform retains ownership of the composer, conversation, and Artifact DOM, so native behavior continues to work.
-5. A scoped observer refreshes DocuVeil when the host platform updates its interface.
+5. Claude transcript, virtual-scroll, and composer layout primitives retain their native
+   positioning and flex behavior; DocuVeil applies only the presentation rules required for readability.
+6. A scoped observer refreshes DocuVeil when the host platform updates its interface.
 
 ## Platform support
 
@@ -188,6 +192,8 @@ DocuVeil/
 
 - The extension is installed from source; no browser-store package is available yet.
 - ChatGPT and Claude can change their DOM without notice. DocuVeil falls back to the native interface when it cannot safely identify required elements.
+- Claude support follows the current personal-chat `transcript-*` DOM structure. Run the
+  Chrome and Edge smoke-test checklist again whenever Claude changes its chat or composer interface.
 - Claude Projects, Team/Enterprise layouts, Gemini, mobile browsers, and non-Chromium browsers are outside the current MVP scope.
 
 ## Privacy
