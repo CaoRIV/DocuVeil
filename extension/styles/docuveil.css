@@ -24,7 +24,7 @@
 
 /* Flatten native surfaces before applying the document layout. Do not change
    opacity or visibility: those properties also control menus and overlays. */
-.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form, header, footer),
+.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form, header, footer):not([data-docuveil-native="auxiliary"], [data-docuveil-native="auxiliary"] *),
 .docuveil-enabled [data-docuveil-native="composer"] :where(div, section),
 .docuveil-enabled [data-docuveil-surface] {
   background-color: transparent !important;
@@ -36,8 +36,8 @@
 
 .docuveil-enabled [data-docuveil-native="conversation"]::before,
 .docuveil-enabled [data-docuveil-native="conversation"]::after,
-.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form)::before,
-.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form)::after,
+.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form):not([data-docuveil-native="auxiliary"], [data-docuveil-native="auxiliary"] *)::before,
+.docuveil-enabled [data-docuveil-native="conversation"] :where(div, section, article, form):not([data-docuveil-native="auxiliary"], [data-docuveil-native="auxiliary"] *)::after,
 .docuveil-enabled [data-docuveil-surface]::before,
 .docuveil-enabled [data-docuveil-surface]::after {
   background: transparent !important;
@@ -45,8 +45,8 @@
   backdrop-filter: none !important;
 }
 
-.docuveil-enabled [data-docuveil-native="conversation"] :where(.markdown, .prose, [data-message-author-role]),
-.docuveil-enabled [data-docuveil-native="conversation"] :where(.markdown, .prose, [data-message-author-role]) :where(span, div, p, li, strong, em, code) {
+.docuveil-enabled [data-docuveil-native="conversation"] :where(.markdown, .prose, [data-message-author-role]):not([data-docuveil-native="auxiliary"], [data-docuveil-native="auxiliary"] *),
+.docuveil-enabled [data-docuveil-native="conversation"] :where(.markdown, .prose, [data-message-author-role]):not([data-docuveil-native="auxiliary"], [data-docuveil-native="auxiliary"] *) :where(span, div, p, li, strong, em, code):not([data-docuveil-native="auxiliary"] *) {
   color: #202124 !important;
   -webkit-text-fill-color: #202124 !important;
   background-image: none !important;
@@ -56,11 +56,11 @@
   -webkit-mask-image: none !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] :where(button, [role="button"]):not([data-testid="send-button"], [data-testid="stop-button"], [type="submit"]) {
+.docuveil-enabled [data-docuveil-native="composer"] :where(button, [role="button"]):not([data-testid="send-button"], [data-testid="stop-button"], [data-testid="chat-input-send"], [type="submit"]) {
   display: none !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] :is([data-testid="send-button"], [data-testid="stop-button"], button[type="submit"]) {
+.docuveil-enabled [data-docuveil-native="composer"] :is([data-testid="send-button"], [data-testid="stop-button"], [data-testid="chat-input-send"], button[type="submit"]) {
   color: #202124 !important;
   background: #eef2f8 !important;
   border: 1px solid #d9dee8 !important;
@@ -88,8 +88,8 @@
   transform: none !important;
 }
 
-.docuveil-enabled [data-docuveil-native="conversation"] article,
-.docuveil-enabled [data-docuveil-native="conversation"] article :is(p, h1, h2, h3, h4, li, td, th, blockquote, strong, em) {
+.docuveil-enabled [data-docuveil-native="conversation"] article:not([data-docuveil-native="auxiliary"], [data-docuveil-native="auxiliary"] *),
+.docuveil-enabled [data-docuveil-native="conversation"] article :is(p, h1, h2, h3, h4, li, td, th, blockquote, strong, em):not([data-docuveil-native="auxiliary"] *) {
   color: #202124 !important;
   opacity: 1 !important;
   filter: none !important;
@@ -192,14 +192,14 @@
   box-shadow: none !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] #prompt-textarea,
-.docuveil-enabled [data-docuveil-native="composer"] #prompt-textarea p {
-  color: var(--docuveil-ink) !important;
+.docuveil-enabled [data-docuveil-native="composer"] :is(#prompt-textarea, [contenteditable="true"][role="textbox"]),
+.docuveil-enabled [data-docuveil-native="composer"] :is(#prompt-textarea, [contenteditable="true"][role="textbox"]) p {
+  color: #202124 !important;
   opacity: 1 !important;
-  -webkit-text-fill-color: var(--docuveil-ink) !important;
+  -webkit-text-fill-color: #202124 !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] div:has(#prompt-textarea) {
+.docuveil-enabled [data-docuveil-native="composer"] div:has(:is(#prompt-textarea, [contenteditable="true"][role="textbox"])) {
   position: relative !important;
   inset: auto !important;
   display: block !important;
@@ -219,7 +219,7 @@
   margin: 0 !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] #prompt-textarea {
+.docuveil-enabled [data-docuveil-native="composer"] :is(#prompt-textarea, [contenteditable="true"][role="textbox"]) {
   box-sizing: border-box !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -236,23 +236,35 @@
   caret-color: var(--docuveil-ink) !important;
 }
 
-.docuveil-enabled #prompt-textarea p {
+.docuveil-enabled :is(#prompt-textarea, [contenteditable="true"][role="textbox"]) p {
   margin: 0 !important;
 }
 
-.docuveil-enabled #prompt-textarea:empty::before,
-.docuveil-enabled #prompt-textarea [data-placeholder]::before {
+.docuveil-enabled :is(#prompt-textarea, [contenteditable="true"][role="textbox"]):empty::before,
+.docuveil-enabled :is(#prompt-textarea, [contenteditable="true"][role="textbox"]) [data-placeholder]::before {
   color: #9aa0a6 !important;
   -webkit-text-fill-color: #9aa0a6 !important;
 }
 
-.docuveil-enabled #prompt-textarea:focus-visible {
+.docuveil-enabled :is(#prompt-textarea, [contenteditable="true"][role="textbox"]):focus-visible {
   outline: 1px solid #dce6ff !important;
   outline-offset: 0.5rem !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] :is(#composer-plus-btn, [data-testid="composer-plus-btn"], input[type="file"]) {
+.docuveil-enabled [data-docuveil-native="composer"] :is(#composer-plus-btn, [data-testid="composer-plus-btn"], [data-testid="chat-input-attach"], input[type="file"]) {
   display: none !important;
+}
+
+html[data-docuveil-platform="claude"].docuveil-enabled
+  [data-docuveil-native="conversation"] :is(p, li, h1, h2, h3, code):not([data-docuveil-native="auxiliary"] *) {
+  color: var(--docuveil-ink) !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--docuveil-ink) !important;
+}
+
+html[data-docuveil-platform="claude"].docuveil-enabled [data-docuveil-native="auxiliary"] {
+  z-index: 2147483644 !important;
+  pointer-events: auto !important;
 }
 
 /* Only message surfaces are reset; overlays and disabled controls keep native state. */

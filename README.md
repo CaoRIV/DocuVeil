@@ -3,9 +3,9 @@
 
   # DocuVeil
 
-  **A focused, document-style workspace for ChatGPT.**
+  **A focused, document-style workspace for ChatGPT and Claude.**
 
-  DocuVeil reshapes the ChatGPT web interface into a calm writing environment while preserving the platform's native conversation flow.
+  DocuVeil reshapes supported AI chat interfaces into a calm writing environment while preserving each platform's native conversation flow.
 
   [![CI](https://github.com/CaoRIV/DocuVeil/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/CaoRIV/DocuVeil/actions/workflows/ci.yml)
   [![Version](https://img.shields.io/badge/version-0.1.0-4f6fea)](extension/manifest.json)
@@ -16,13 +16,13 @@
 </div>
 
 > [!NOTE]
-> DocuVeil is currently an MVP distributed as a source build. It supports the desktop ChatGPT website on Google Chrome and Microsoft Edge.
+> DocuVeil is currently an MVP distributed as a source build. It supports ChatGPT and Claude Free/Pro personal chats on desktop Google Chrome and Microsoft Edge.
 
 ## Overview
 
 Chat interfaces are useful for quick exchanges, but long conversations can become visually noisy and difficult to review. DocuVeil presents the same conversation as a continuous document with familiar editor-style chrome, a dedicated history sidebar, and an inline prompt area.
 
-DocuVeil is a presentation layer—not a replacement chat client. It keeps ChatGPT's native composer, message handling, navigation, and response rendering in place.
+DocuVeil is a presentation layer—not a replacement chat client. It keeps each platform's native composer, message handling, navigation, and response rendering in place.
 
 ## Preview
 
@@ -34,13 +34,14 @@ DocuVeil is a presentation layer—not a replacement chat client. It keeps ChatG
 
 ## Current MVP features
 
-- A document-style reading and writing canvas for ChatGPT conversations.
-- A persistent conversation sidebar built from the user's native ChatGPT history.
+- A document-style reading and writing canvas for ChatGPT and Claude conversations.
+- A persistent conversation sidebar built from the active platform's native history.
 - An inline prompt area that remains part of the document flow.
-- Live UI refreshes while ChatGPT navigates, replaces page elements, or streams responses.
+- Live UI refreshes while the host platform navigates, replaces page elements, or streams responses.
+- Native Claude Artifacts remain visible and interactive.
 - A one-click toolbar action to enable or disable DocuVeil.
-- Local persistence of the enabled state through `chrome.storage.local`.
-- A fail-open compatibility mode that leaves native ChatGPT available when the current page structure is unsupported.
+- Independent ChatGPT and Claude enabled states stored through `chrome.storage.local`.
+- A fail-open compatibility mode that leaves the native platform available when its current page structure is unsupported.
 - No DocuVeil account, backend, analytics, telemetry, or conversation storage.
 
 ## Install and run from source
@@ -50,7 +51,7 @@ DocuVeil is a presentation layer—not a replacement chat client. It keeps ChatG
 - [Node.js](https://nodejs.org/) 20 or newer
 - npm
 - Desktop Google Chrome or Microsoft Edge
-- A ChatGPT account
+- A ChatGPT account or Claude Free/Pro personal account
 
 ### 1. Clone and build
 
@@ -81,10 +82,12 @@ The unpacked browser extension is generated in `dist/extension`.
 
 ### 3. Use DocuVeil
 
-1. Open [chatgpt.com](https://chatgpt.com/).
+1. Open [chatgpt.com](https://chatgpt.com/) or [claude.ai](https://claude.ai/).
 2. Select the DocuVeil icon in the browser toolbar.
-3. Continue using ChatGPT normally inside the document-style interface.
+3. Continue using the chat normally inside the document-style interface.
 4. Select the icon again whenever you want to return to the native interface.
+
+ChatGPT and Claude are toggled independently, so enabling DocuVeil on one platform does not change the other.
 
 After changing the extension source, rebuild and reload it:
 
@@ -92,7 +95,7 @@ After changing the extension source, rebuild and reload it:
 npm run build:extension
 ```
 
-Then select **Reload** on the DocuVeil card in `chrome://extensions` or `edge://extensions`, and refresh the ChatGPT tab.
+Then select **Reload** on the DocuVeil card in `chrome://extensions` or `edge://extensions`, and refresh any open ChatGPT or Claude tabs.
 
 For more detail, see the [installation guide](docs/INSTALL.md).
 
@@ -157,11 +160,20 @@ DocuVeil/
 
 ## How it works
 
-1. The extension toolbar action toggles a locally stored enabled flag.
-2. A content script inspects the active ChatGPT page through a platform adapter.
+1. The extension toolbar action toggles a locally stored enabled flag for the current platform.
+2. A content script detects ChatGPT or Claude and inspects the page through its dedicated platform adapter.
 3. When the required native elements are available, DocuVeil applies its document layout and renders its workspace chrome.
-4. ChatGPT retains ownership of the composer and conversation DOM, so native input and response behavior continue to work.
-5. A scoped observer refreshes DocuVeil when ChatGPT updates its interface.
+4. The host platform retains ownership of the composer, conversation, and Artifact DOM, so native behavior continues to work.
+5. A scoped observer refreshes DocuVeil when the host platform updates its interface.
+
+## Platform support
+
+| Platform | MVP support |
+| --- | --- |
+| ChatGPT personal chats | Supported |
+| Claude Free/Pro personal chats | Supported |
+| Claude Projects and Team/Enterprise layouts | Not currently supported |
+| Gemini | Not currently supported |
 
 ## Browser support
 
@@ -174,14 +186,13 @@ DocuVeil/
 
 ## Current limitations
 
-- Only `https://chatgpt.com` is supported.
 - The extension is installed from source; no browser-store package is available yet.
-- ChatGPT can change its DOM without notice. DocuVeil falls back to the native interface when it cannot safely identify the required elements.
-- Claude, Gemini, mobile browsers, and non-Chromium browsers are outside the current MVP scope.
+- ChatGPT and Claude can change their DOM without notice. DocuVeil falls back to the native interface when it cannot safely identify required elements.
+- Claude Projects, Team/Enterprise layouts, Gemini, mobile browsers, and non-Chromium browsers are outside the current MVP scope.
 
 ## Privacy
 
-DocuVeil runs locally in the browser and stores only its enabled flag. It does not collect or store prompts, responses, files, cookies, history, or credentials. Conversations remain handled by ChatGPT under OpenAI's terms and privacy policy.
+DocuVeil runs locally in the browser and stores only per-platform enabled flags. It does not collect or store prompts, responses, files, cookies, history, or credentials. Conversations remain handled by ChatGPT or Claude under their respective platform terms and privacy policies.
 
 Read the complete [privacy statement](docs/PRIVACY.md).
 
@@ -196,7 +207,7 @@ Read the complete [privacy statement](docs/PRIVACY.md).
 
 ## Contributing
 
-Issues and focused pull requests are welcome. Platform-specific selectors belong in `extension/src/adapters/chatgpt/selectors.ts`, and DOM lifecycle changes should include an updated fixture or regression test.
+Issues and focused pull requests are welcome. Platform-specific selectors belong in their matching directory under `extension/src/adapters/`, and DOM lifecycle changes should include an updated fixture or regression test.
 
 Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) before opening a pull request.
 

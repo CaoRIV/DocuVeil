@@ -376,7 +376,7 @@ Suggested commit: `feat(extension): activate DocuVeil on Claude`
 - Consumes: Claude markers from `SkinController` and `ClaudeAdapter`.
 - Produces: stable Claude document presentation without changing native DOM ownership.
 
-- [ ] **Step 1: Write failing Claude skin tests**
+- [x] **Step 1: Write failing Claude skin tests**
 
 Mount the real Claude adapter/controller against the supported fixture and assert:
 
@@ -390,12 +390,12 @@ expect(artifact.getAttribute('data-docuveil-native')).toBe('auxiliary');
 
 Append streamed text, replace the native `main`, and verify the controller re-marks the new nodes without rebuilding the sidebar. Disable DocuVeil and assert that the platform attribute, auxiliary marker, shell, and native markers are gone.
 
-- [ ] **Step 2: Verify RED**
+- [x] **Step 2: Verify RED**
 
 Run: `npm test -w @docuveil/extension -- --run tests/integration/claudeSkin.test.ts`  
 Expected: FAIL where ChatGPT-specific editor selectors and Artifact stacking are not yet supported.
 
-- [ ] **Step 3: Generalize only the required CSS selectors**
+- [x] **Step 3: Generalize only the required CSS selectors**
 
 Replace `#prompt-textarea`-only composer rules with the bounded editor selector:
 
@@ -416,7 +416,7 @@ html[data-docuveil-platform="claude"].docuveil-enabled
 
 Do not add a Claude rule unless the fixture or live smoke test demonstrates the need.
 
-- [ ] **Step 4: Verify automated behavior**
+- [x] **Step 4: Verify automated behavior**
 
 Run:
 
@@ -445,7 +445,7 @@ On Chrome or Edge with a Claude Free/Pro account, verify:
 
 Convert every observed defect into a focused fixture regression before adjusting selectors or CSS.
 
-- [ ] **Step 6: Update user documentation**
+- [x] **Step 6: Update user documentation**
 
 Add Claude to the README support table and source-install usage steps. Update `docs/INSTALL.md` to tell users to open either `chatgpt.com` or `claude.ai`. Update `docs/CONTRIBUTING.md` so each platform keeps selectors in its own adapter directory and host-DOM changes require fixtures and Chrome/Edge smoke tests.
 
