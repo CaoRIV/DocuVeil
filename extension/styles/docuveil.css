@@ -153,7 +153,7 @@
   border-radius: 0.375rem !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled [data-docuveil-native="composer"] {
   position: relative !important;
   z-index: auto !important;
   inset: auto !important;
@@ -175,7 +175,7 @@
 }
 
 /* Release native sticky/fixed containers without moving their React children. */
-.docuveil-enabled [data-docuveil-composer-path] {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled [data-docuveil-composer-path] {
   position: static !important;
   inset: auto !important;
   transform: none !important;
@@ -199,7 +199,8 @@
   -webkit-text-fill-color: #202124 !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] div:has(:is(#prompt-textarea, [contenteditable="true"][role="textbox"])) {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled
+  [data-docuveil-native="composer"] div:has(:is(#prompt-textarea, [contenteditable="true"][role="textbox"])) {
   position: relative !important;
   inset: auto !important;
   display: block !important;
@@ -219,7 +220,8 @@
   margin: 0 !important;
 }
 
-.docuveil-enabled [data-docuveil-native="composer"] :is(#prompt-textarea, [contenteditable="true"][role="textbox"]) {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled
+  [data-docuveil-native="composer"] :is(#prompt-textarea, [contenteditable="true"][role="textbox"]) {
   box-sizing: border-box !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -256,10 +258,14 @@
 }
 
 html[data-docuveil-platform="claude"].docuveil-enabled
-  [data-docuveil-native="conversation"] :is(p, li, h1, h2, h3, code):not([data-docuveil-native="auxiliary"] *) {
-  color: var(--docuveil-ink) !important;
+  [data-docuveil-native="conversation"]
+  [data-testid="transcript-row"]
+  :is(p, li, h1, h2, h3, h4, code, span, strong, em, blockquote):not([data-docuveil-native="auxiliary"] *),
+html[data-docuveil-platform="claude"].docuveil-enabled
+  [data-docuveil-native="conversation"] [data-testid="user-message"] {
+  color: #202124 !important;
   opacity: 1 !important;
-  -webkit-text-fill-color: var(--docuveil-ink) !important;
+  -webkit-text-fill-color: #202124 !important;
 }
 
 html[data-docuveil-platform="claude"].docuveil-enabled [data-docuveil-native="auxiliary"] {
@@ -276,23 +282,27 @@ html[data-docuveil-platform="claude"].docuveil-enabled [data-docuveil-native="au
   border-radius: 0 !important;
 }
 
-.docuveil-enabled [data-docuveil-native="conversation"] div:has(article) {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled
+  [data-docuveil-native="conversation"] div:has(article) {
   min-height: 0 !important;
   height: auto !important;
   max-height: none !important;
   background: transparent !important;
 }
 
-.docuveil-enabled [data-docuveil-native="conversation"]:not(:has(article)) [data-docuveil-native="composer"] {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled
+  [data-docuveil-native="conversation"]:not(:has(article)) [data-docuveil-native="composer"] {
   margin-top: clamp(4rem, 25vh, 20rem) !important;
 }
 
-.docuveil-enabled [data-docuveil-native="conversation"]:not(:has(article)) h1 {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled
+  [data-docuveil-native="conversation"]:not(:has(article)) h1 {
   display: none !important;
 }
 
 /* Some native variants put the form beside main. Align it without moving it. */
-.docuveil-enabled [data-docuveil-native="composer"]:not([data-docuveil-native="conversation"] *) {
+html:not([data-docuveil-platform="claude"]).docuveil-enabled
+  [data-docuveil-native="composer"]:not([data-docuveil-native="conversation"] *) {
   width: min(58rem, calc(100vw - 28rem)) !important;
   margin-left: auto !important;
   margin-right: max(3rem, calc((100vw - var(--docuveil-sidebar-width) - 58rem) / 2)) !important;

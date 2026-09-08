@@ -10,18 +10,39 @@
     <div data-testid="chat-stale-nav-frame">
       <div data-testid="chat-stale-nav-body">
         <div data-testid="chat-column-body">
-          <article><p>Claude response</p></article>
           <div data-testid="chat-column">
-            <fieldset>
-              <div
-                contenteditable="true"
-                role="textbox"
-                aria-label="Write your prompt to Claude"
-                data-testid="chat-input"
-              ></div>
-              <button type="button" data-testid="chat-input-attach">Attach</button>
-              <button type="button" data-testid="chat-input-send">Send message</button>
-            </fieldset>
+            <div data-testid="transcript-list">
+              <div data-testid="transcript-sizer">
+                <div data-testid="transcript-spacer">
+                  <div data-testid="transcript-row">
+                    <div data-testid="user-message"><span>User question</span></div>
+                  </div>
+                  <div data-testid="transcript-row">
+                    <div class="claude-response"><p>Claude response</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div data-testid="chat-footer-spark">
+              <div role="presentation" class="claude-composer-host">
+                <fieldset>
+                  <div class="claude-composer-stack">
+                    <div class="claude-composer-row">
+                      <div
+                        contenteditable="true"
+                        role="textbox"
+                        aria-label="Write your prompt to Claude"
+                        data-testid="chat-input"
+                      ></div>
+                      <button type="button" data-testid="chat-input-attach">Attach</button>
+                      <button type="button" data-testid="model-selector-dropdown">Model</button>
+                      <button type="button" data-testid="chat-input-send">Send message</button>
+                      <button type="button" aria-label="Dictate">Dictate</button>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
           </div>
         </div>
         <div role="region" aria-label="Artifact panel: Example website">

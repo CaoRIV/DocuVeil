@@ -8,6 +8,87 @@ import { SkinController } from '../../src/content/skinController';
 const skinCss = readFileSync(resolve(process.cwd(), 'styles/docuveil.css'), 'utf8');
 
 describe('Claude skin integration', () => {
+  it('preserves Claude transcript and composer layout primitives', () => {
+    const hostStyle = document.createElement('style');
+    hostStyle.textContent = `
+      [data-testid="transcript-list"] {
+        position: relative;
+        overflow: auto;
+      }
+      .claude-composer-stack,
+      .claude-composer-row {
+        display: flex;
+      }
+      .claude-composer-host {
+        position: sticky;
+        flex: 1 1 auto;
+        margin: 11px;
+        padding: 12px;
+      }
+      fieldset {
+        margin: 7px;
+      }
+    `;
+    const style = document.createElement('style');
+    style.textContent = skinCss;
+    document.head.append(hostStyle, style);
+    document.body.innerHTML = supportedHtml;
+    const transcript = document.querySelector<HTMLElement>('[data-testid="transcript-list"]')!;
+    const host = document.querySelector<HTMLElement>('.claude-composer-host')!;
+    const stack = document.querySelector<HTMLElement>('.claude-composer-stack')!;
+    const row = document.querySelector<HTMLElement>('.claude-composer-row')!;
+    const fieldset = document.querySelector<HTMLElement>('fieldset')!;
+    const controller = new SkinController(document, new ClaudeAdapter(document, window));
+
+    try {
+      controller.setEnabled(true);
+      expect(getComputedStyle(transcript).position).toBe('relative');
+      expect(getComputedStyle(transcript).overflow).toBe('auto');
+      expect(getComputedStyle(host).position).toBe('sticky');
+      expect(getComputedStyle(host).flex).toBe('1 1 auto');
+      expect(getComputedStyle(host).marginTop).toBe('11px');
+      expect(getComputedStyle(host).paddingTop).toBe('12px');
+      expect(getComputedStyle(stack).display).toBe('flex');
+      expect(getComputedStyle(row).display).toBe('flex');
+      expect(getComputedStyle(fieldset).marginTop).toBe('7px');
+    } finally {
+      controller.destroy();
+      style.remove();
+      hostStyle.remove();
+    }
+  });
+
+  it('renders Claude transcript context without relying on article elements', () => {
+    const hostStyle = document.createElement('style');
+    hostStyle.textContent = `
+      [data-testid="user-message"] span,
+      .claude-response p {
+        color: rgb(245, 245, 245);
+        opacity: 0.25;
+      }
+    `;
+    const style = document.createElement('style');
+    style.textContent = skinCss;
+    document.head.append(hostStyle, style);
+    document.body.innerHTML = supportedHtml;
+    const userText = document.querySelector<HTMLElement>('[data-testid="user-message"] span')!;
+    const responseText = document.querySelector<HTMLElement>('.claude-response p')!;
+    const controller = new SkinController(document, new ClaudeAdapter(document, window));
+
+    try {
+      expect(document.querySelector('article')).toBeNull();
+      controller.setEnabled(true);
+      expect(getComputedStyle(userText).color).toBe('rgb(32, 33, 36)');
+      expect(getComputedStyle(userText).opacity).toBe('1');
+      expect(getComputedStyle(responseText).color).toBe('rgb(32, 33, 36)');
+      expect(getComputedStyle(responseText).opacity).toBe('1');
+    } finally {
+      controller.destroy();
+      style.remove();
+      hostStyle.remove();
+    }
+  });
+
   it('mounts without moving Claude-owned composer and Artifact nodes', () => {
     history.replaceState({}, '', '/chat/beta');
     document.body.innerHTML = supportedHtml;
