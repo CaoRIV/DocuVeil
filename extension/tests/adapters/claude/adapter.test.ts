@@ -1,10 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import supportedHtml from '../../fixtures/claude-supported.html?raw';
 import unsupportedHtml from '../../fixtures/claude-unsupported.html?raw';
+import capturedLayout from '../../fixtures/claude-layout.html?raw';
 import { ClaudeAdapter } from '../../../src/adapters/claude/adapter';
 
 describe('ClaudeAdapter', () => {
   beforeEach(() => history.replaceState({}, '', '/chat/beta'));
+
+  it('detects the fieldset-free sticky composer and excludes response footer actions', () => {
+    document.body.innerHTML = new DOMParser().parseFromString(capturedLayout, 'text/html').body.innerHTML;
+    const snapshot = new ClaudeAdapter(document, window).inspect();
+    expect(snapshot.ready).toBe(true);
+    expect(snapshot.composerRoot).toBe(document.querySelector('.native-composer'));
+    expect(snapshot.composerRoot?.contains(snapshot.composer)).toBe(true);
+    expect(snapshot.composerRoot?.contains(document.querySelector('[data-testid="chat-footer-spark"]'))).toBe(false);
+  });
 
   it('normalizes a supported Claude chat and preserves its Artifact root', () => {
     document.body.innerHTML = supportedHtml;

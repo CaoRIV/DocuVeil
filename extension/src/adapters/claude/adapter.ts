@@ -17,7 +17,14 @@ export class ClaudeAdapter implements PlatformAdapter {
     const navRoot = element<HTMLElement>(this.doc, selectors.navigationRoot);
     const conversationRoot = element<HTMLElement>(this.doc, selectors.conversationRoot);
     const composer = element<HTMLElement>(this.doc, selectors.composer);
-    const composerRoot = composer?.closest<HTMLElement>('fieldset') ?? null;
+    // Current personal chats use a sticky direct child of chat-column rather
+    // than a fieldset. Keep the whole native input surface, including its footer.
+    const column = composer?.closest<HTMLElement>('[data-testid="chat-column"]');
+    const composerRoot = composer?.closest<HTMLElement>('fieldset')
+      ?? ([...(column?.children ?? [])].find((child) =>
+        child.contains(composer ?? null) && !child.querySelector('[data-testid="transcript-list"]'),
+      ) as HTMLElement | undefined)
+      ?? null;
     const sendButton = element<HTMLElement>(this.doc, selectors.sendButton);
     const newChatButton = element<HTMLElement>(this.doc, selectors.newChatButton);
     const links = [...this.doc.querySelectorAll<HTMLAnchorElement>(selectors.conversationLinks)];
