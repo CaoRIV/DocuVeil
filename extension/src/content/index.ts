@@ -12,6 +12,7 @@ if (platform) {
   void bootstrapDocuVeil({
     platform,
     storage: chrome.storage.local,
+    storageChanges: chrome.storage.onChanged,
     runtime: {
       onMessage: {
         addListener(listener) {

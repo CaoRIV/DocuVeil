@@ -20,6 +20,7 @@ describe('bootstrapDocuVeil', () => {
     const controller = { setEnabled: vi.fn(), destroy: vi.fn() };
     const cleanup = await bootstrapDocuVeil({
       platform: 'claude', storage, runtime, controller,
+      storageChanges: { addListener: vi.fn(), removeListener: vi.fn() },
     });
     expect(controller.setEnabled).toHaveBeenCalledWith(true);
     listener?.({ type: STATE_MESSAGE, enabled: false });
